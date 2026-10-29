@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARCs: Fundamentos del Conflicto | Sesión 1</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Inter & Cinzel & Merriweather -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+        .font-serif-title {
+            font-family: 'Cinzel', serif;
+        }
+        .font-academic {
+            font-family: 'Merriweather', Georgia, serif;
+        }
+        /* Animaciones de Diapositivas */
+        .slide {
+            display: none;
+            opacity: 0;
+            transform: translateY(15px) scale(0.995);
+            transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        /* Scrollbar */
+        .slide-scroll::-webkit-scrollbar { width: 6px; }
+        .slide-scroll::-webkit-scrollbar-track { background: #f8fafc; border-radius: 9999px; }
+        .slide-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .slide-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Textos degradados */
+        .emerald-gradient-text {
+            background: linear-gradient(135deg, #047857 0%, #059669 50%, #064e3b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Paneles */
+        .glass-panel {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .glass-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Cuadros Giratorios (Flip Cards) */
+        .flip-card { background-color: transparent; perspective: 1000px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .flip-card-front { background-color: #ffffff; border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; }
+        .flip-card-back { background-color: #1e293b; color: white; transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; text-align: left;}
+
+        /* Escalera del Conflicto */
+        .step-container { display: flex; flex-direction: column; align-items: center; position: relative; }
+        .step-line { position: absolute; top: 2rem; left: 50%; width: 100%; height: 2px; background-color: #cbd5e1; z-index: 0; }
+    </style>
+</head>
+<body class="h-full w-full overflow-hidden flex flex-col select-none bg-white text-slate-800">
+
+    <!-- Barra de progreso -->
+    <div class="w-full bg-slate-100 h-1.5 fixed top-0 left-0 z-50">
+        <div id="progress-bar" class="h-full bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-500 transition-all duration-300 w-0"></div>
+    </div>
+
+    <!-- Barra de estado superior -->
+    <header class="w-full h-14 bg-white border-b border-slate-200 px-4 md:px-8 flex items-center justify-between z-40 shrink-0 shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-md">
+                <i data-lucide="handshake" class="w-4 h-4"></i>
+            </div>
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 block font-serif-title">Módulo MARCs</span>
+                <span class="text-[11px] text-slate-500 hidden sm:inline">Maestría en Derecho Civil y Procesal Civil</span>
+            </div>
+        </div>
+
+        <div id="top-slide-title" class="hidden lg:block text-xs text-slate-700 font-semibold px-4 py-1.5 rounded-full bg-slate-100 border border-slate-200 truncate max-w-md"></div>
+
+        <div class="flex items-center gap-2">
+            <span id="slide-counter" class="text-xs font-bold text-slate-500 mr-2">1 / X</span>
+            <button onclick="toggleFullscreen()" title="Pantalla Completa (F)" class="p-2 text-slate-600 hover:text-emerald-600 hover:bg-slate-100 rounded-lg transition-colors">
+                <i data-lucide="maximize" class="w-4 h-4" id="fullscreen-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <main id="presentation-stage" class="flex-1 relative w-full h-[calc(100vh-7rem)] overflow-hidden bg-white">
+        
+        <!-- DIAPOSITIVA 0: CARÁTULA -->
+        <section class="slide active flex-col items-center justify-center h-full p-6 md:p-12 text-center relative" data-title="Carátula: Del conflicto a la tutela apropiada">
+            <div class="max-w-4xl mx-auto z-10 flex flex-col items-center my-auto">
+                <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-emerald-300 bg-emerald-50 text-emerald-900 text-xs tracking-widest uppercase mb-8 font-semibold shadow-sm">
+                    <i data-lucide="graduation-cap" class="w-4 h-4 text-emerald-600"></i>
+                    Postgrado en Ciencias Jurídicas
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-serif-title uppercase mb-6 leading-tight">
+                    <span class="text-slate-900">Del conflicto a la</span><br>
+                    <span class="emerald-gradient-text">Tutela Apropiada</span>
+                </h1>
+
+                <p class="text-slate-600 text-base md:text-xl max-w-3xl mx-auto font-academic italic mb-10 leading-relaxed">
+                    «Teoría del conflicto, giro doctrinal, marco internacional y recepción jurídica de los MARCs en Bolivia»
+                </p>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-6">
+                    <p class="text-sm font-semibold text-slate-700">Docente: M.Sc. Alberto Mercado Carrasco</p>
+                </div>
+
+                <div class="flex items-center gap-3 w-48 justify-center my-2 opacity-60">
+                    <div class="h-0.5 bg-emerald-400 flex-1"></div>
+                    <i data-lucide="network" class="w-4 h-4 text-teal-600"></i>
+                    <div class="h-0.5 bg-teal-400 flex-1"></div>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-6 left-0 right-0 text-center text-slate-400 text-xs font-medium tracking-wide">
+                Sesión 1 • Métodos Alternativos de Resolución de Controversias
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 1: PÓRTICO (LA ESCENA) -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="Pórtico: La semilla del módulo">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-slate-100 text-slate-800 font-bold text-xs uppercase font-serif-title border border-slate-200">Prólogo</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">Una escena cotidiana...</h2>
+            </div>
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2 space-y-4">
+                <div class="glass-panel p-6 rounded-2xl border-l-4 border-emerald-500 bg-slate-50">
+                    <div class="flex gap-4">
+                        <div class="shrink-0 pt-1">
+                            <i data-lucide="home" class="w-8 h-8 text-emerald-600"></i>
+                        </div>
+                        <p class="font-academic text-slate-800 text-sm md:text-base leading-relaxed">
+                            Dos hermanos heredan una casa. Uno quiere venderla urgente por liquidez; el otro quiere conservarla por su valor afectivo materno. Aún no hay demanda, pero el conflicto ya existe. Una sentencia de división y partición subastará la casa... pero, <strong>¿resolverá aquello que realmente separó a esos hermanos?</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="glass-panel p-5 rounded-xl">
+                        <h4 class="font-bold text-slate-800 flex items-center gap-2 mb-2"><i data-lucide="x-circle" class="w-4 h-4 text-rose-500"></i> La Falsa Creencia</h4>
+                        <p class="text-xs text-slate-600">Creer que el proceso judicial es el único camino natural y que otras vías son "justicia de segunda mano". El conflicto es anterior al proceso, más amplio que el litigio y más complejo que la pretensión.</p>
+                    </div>
+                    <div class="glass-panel p-5 rounded-xl border border-teal-200 bg-teal-50/30">
+                        <h4 class="font-bold text-teal-900 flex items-center gap-2 mb-2"><i data-lucide="check-circle" class="w-4 h-4 text-teal-600"></i> El Giro Necesario</h4>
+                        <p class="text-xs text-slate-700">Los MARCs no son una moda. Responden a la necesidad de ofrecer <strong>tratamientos proporcionales</strong> a conflictos que tienen distintas formas e intensidades.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 mt-2 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg text-sm text-amber-900 font-medium">
+                    <i data-lucide="help-circle" class="w-4 h-4 inline mr-1"></i> Pregunta: El último caso civil que usted patrocinó, ¿resolvió el problema del cliente o solamente su pretensión?
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 2: UNIDAD I. EL CONFLICTO -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="1.1. El conflicto como objeto de estudio">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-teal-100 text-teal-800 font-bold text-xs uppercase font-serif-title border border-teal-200">Unidad I</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">1.1. El conflicto no es anomalía, es relación social</h2>
+            </div>
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2 space-y-4">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="glass-panel p-4 rounded-xl text-center">
+                        <div class="w-10 h-10 mx-auto bg-slate-100 rounded-full flex items-center justify-center mb-2"><i data-lucide="users" class="w-5 h-5 text-slate-600"></i></div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1">Georg Simmel (1908)</h4>
+                        <p class="text-xs text-slate-600">El conflicto es una forma de <strong>socialización</strong>. Quienes pelean, siguen orientándose el uno al otro construyendo sociedad.</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl text-center">
+                        <div class="w-10 h-10 mx-auto bg-emerald-100 rounded-full flex items-center justify-center mb-2"><i data-lucide="settings" class="w-5 h-5 text-emerald-600"></i></div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1">Lewis Coser (1956)</h4>
+                        <p class="text-xs text-slate-600"><strong>Realista:</strong> Medio para obtener resultado (Acuerdo posible).<br><strong>No Realista:</strong> Medio para descargar hostilidad (El conflicto como fin en sí mismo).</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl text-center">
+                        <div class="w-10 h-10 mx-auto bg-indigo-100 rounded-full flex items-center justify-center mb-2"><i data-lucide="git-merge" class="w-5 h-5 text-indigo-600"></i></div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1">Ralf Dahrendorf</h4>
+                        <p class="text-xs text-slate-600">Los conflictos no se suprimen sin costos, pero se <strong>regulan</strong> cuando las partes aceptan reglas comunes (Ahí entra el Derecho).</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+                    <h4 class="font-bold text-slate-800 mb-2">La CPE y la "Armonía Social" (Art. 178)</h4>
+                    <p class="text-xs text-slate-700">El derecho no extingue el conflicto; lo encauza. "Armonía social" no es una sociedad sin desacuerdos, es una que dispone de <strong>cauces legítimos</strong> para procesarlos sin destruir los vínculos.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 3: 1.2 LA ESCALERA DEL CONFLICTO -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="1.2. De la diferencia al litigio">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-teal-100 text-teal-800 font-bold text-xs uppercase font-serif-title border border-teal-200">1.2</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">De la diferencia al litigio: La escalera del conflicto</h2>
+            </div>
+            
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2 relative mt-4">
+                <p class="text-xs text-slate-600 text-center mb-6">El Litigio es: <em>"Conflicto de intereses calificado por la pretensión y la resistencia" (Carnelutti)</em>. Pero antes de eso, hay una escalada (Felstiner, Abel y Sarat):</p>
+                
+                <!-- Graphic Timeline Steps -->
+                <div class="flex flex-col md:flex-row justify-between relative max-w-4xl mx-auto pt-4 pb-8 px-4">
+                    <div class="hidden md:block absolute top-10 left-10 right-10 h-1 bg-slate-200 z-0"></div>
+                    
+                    <div class="z-10 flex flex-col items-center mb-6 md:mb-0">
+                        <div class="w-12 h-12 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center text-slate-500 font-bold mb-3">1</div>
+                        <div class="glass-panel p-3 text-center w-32 rounded-lg">
+                            <h4 class="text-xs font-bold text-slate-800 uppercase">Nombrar</h4>
+                            <p class="text-[10px] text-slate-500">Percibe el perjuicio (Naming)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="z-10 flex flex-col items-center mb-6 md:mb-0">
+                        <div class="w-12 h-12 rounded-full bg-amber-100 border-4 border-white shadow-md flex items-center justify-center text-amber-600 font-bold mb-3">2</div>
+                        <div class="glass-panel p-3 text-center w-32 rounded-lg border-amber-200">
+                            <h4 class="text-xs font-bold text-amber-800 uppercase">Culpar</h4>
+                            <p class="text-[10px] text-slate-500">Atribuye responsabilidad (Blaming)</p>
+                        </div>
+                    </div>
+
+                    <div class="z-10 flex flex-col items-center">
+                        <div class="w-12 h-12 rounded-full bg-rose-100 border-4 border-white shadow-md flex items-center justify-center text-rose-600 font-bold mb-3">3</div>
+                        <div class="glass-panel p-3 text-center w-32 rounded-lg border-rose-200">
+                            <h4 class="text-xs font-bold text-rose-800 uppercase">Reclamar</h4>
+                            <p class="text-[10px] text-slate-500">Formula la pretensión (Claiming)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-4 rounded-xl border-l-4 border-emerald-500 bg-emerald-50/30 max-w-4xl mx-auto">
+                    <p class="text-xs text-slate-700"><strong>Consecuencia Práctica:</strong> Como el conflicto sube por una escalera, cada mecanismo encaja mejor en un peldaño. La negociación/mediación funcionan al inicio; la conciliación previa intercepta antes de la demanda; el juicio/arbitraje operan cuando la escalada exige decisión de un tercero.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 4: 1.3 - 1.5 ANATOMÍA Y CAOS -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="1.3. Anatomía del conflicto y complejidad">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-teal-100 text-teal-800 font-bold text-xs uppercase font-serif-title border border-teal-200">1.3 - 1.5</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">Anatomía, Posiciones y Complejidad</h2>
+            </div>
+            
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+                    
+                    <!-- Lado Izquierdo: Galtung y Harvard -->
+                    <div class="flex flex-col gap-4">
+                        <div class="glass-panel p-4 rounded-xl hover-lift">
+                            <h4 class="font-bold text-slate-800 text-sm mb-2 border-b border-slate-200 pb-1">El Triángulo de Galtung</h4>
+                            <p class="text-[11px] text-slate-600">El proceso judicial ataca la <strong>conducta</strong> y la <strong>contradicción</strong> objetiva, pero suele ignorar las <strong>actitudes</strong> (resentimiento, desconfianza). Sin trabajar las actitudes solo hay <em>Paz Negativa</em>.</p>
+                        </div>
+                        
+                        <div class="glass-panel p-4 rounded-xl border-2 border-indigo-100 bg-indigo-50/40 hover-lift">
+                            <h4 class="font-bold text-indigo-900 text-sm mb-2">Posiciones vs Intereses (Escuela de Harvard)</h4>
+                            <ul class="text-xs text-slate-700 space-y-2">
+                                <li><strong>Posición:</strong> Lo que la parte dice querer (Ej. "Quiero la resolución del contrato"). La demanda capta esto.</li>
+                                <li><strong>Interés:</strong> Por qué lo quiere (Ej. "Necesito liquidez"). El MARC capta esto, abriendo soluciones que la sentencia judicial jamás daría (pagos escalonados, garantías).</li>
+                            </ul>
+                        </div>
+
+                        <div class="glass-panel p-4 rounded-xl border-l-4 border-amber-500 hover-lift">
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">Ley de Deutsch</h4>
+                            <p class="text-[11px] text-slate-600"><em>"La competencia engendra competencia; la cooperación engendra cooperación"</em>. Un juicio fuertemente contradictorio produce conductas hostiles.</p>
+                        </div>
+                    </div>
+
+                    <!-- Lado Derecho: Teoría del Caos -->
+                    <div class="glass-panel p-5 rounded-2xl border-2 border-slate-200 relative overflow-hidden flex flex-col justify-center text-center">
+                        <div class="absolute inset-0 bg-gradient-to-br from-slate-50 to-slate-100 opacity-50 -z-10"></div>
+                        <i data-lucide="tornado" class="w-12 h-12 text-slate-400 mx-auto mb-3"></i>
+                        <h3 class="font-bold text-slate-800 text-base mb-2 font-serif-title">1.5. El "Efecto Mariposa" y el Caos</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                            Los conflictos no son lineales. Una simple carta notarial agresiva o una publicación en Facebook (condiciones iniciales) pueden ser el pequeño aleteo que enquista y detona un tornado jurídico (conflicto intratable, <em>atractor</em>).
+                        </p>
+                        <div class="bg-white p-3 rounded border border-slate-200 shadow-sm text-[11px] text-slate-700 text-left">
+                            <strong>Prudencia metodológica:</strong> La teoría del caos no es fuente de derecho ni redefine la prueba. Solo nos advierte que <em>la intervención temprana importa</em> y que la respuesta lineal (sentencia) a un problema no-lineal suele fallar.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 5: UNIDAD II. TRILOGÍA (FLIP CARDS) -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="2. Formas de solución: Clasificación">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-teal-100 text-teal-800 font-bold text-xs uppercase font-serif-title border border-teal-200">Unidad II</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">Las Formas de Solución (Alcalá-Zamora)</h2>
+            </div>
+            
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2">
+                <p class="text-sm text-slate-600 text-center mb-6">Pase el cursor sobre cada tarjeta para entender el mapa procesal clásico (dónde reposa la decisión y su origen). <strong>OJO: No todos los MARCs son iguales.</strong></p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-64">
+                    
+                    <!-- Autodefensa -->
+                    <div class="flip-card h-full">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <i data-lucide="swords" class="w-10 h-10 text-rose-500 mb-3"></i>
+                                <h3 class="font-bold text-slate-800 text-sm uppercase">2.2. Autodefensa (Autotutela)</h3>
+                                <p class="text-[10px] text-slate-500 mt-2">Una parte impone su solución</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4 class="font-bold text-white text-xs mb-2 border-b border-slate-600 pb-1 w-full">El exilio controlado</h4>
+                                <p class="text-[11px] text-slate-300">Marginal y excepcional (retención, excepción contrato no cumplido). Hoy las "medidas de hecho" (cortar agua, cambiar chapa) son repelidas vía Amparo Constitucional por agravar el sistema.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Autocomposición -->
+                    <div class="flip-card h-full">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <i data-lucide="handshake" class="w-10 h-10 text-emerald-500 mb-3"></i>
+                                <h3 class="font-bold text-slate-800 text-sm uppercase">2.3. Autocomposición</h3>
+                                <p class="text-[10px] text-slate-500 mt-2">La decisión permanece en las partes</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4 class="font-bold text-white text-xs mb-2 border-b border-slate-600 pb-1 w-full">Autonomía de la Voluntad</h4>
+                                <p class="text-[11px] text-slate-300">Base: Art 519 CCiv / 234 Ley 439.<br><br>
+                                <strong>Negociación:</strong> Trato directo.<br>
+                                <strong>Mediación:</strong> Tercero facilita.<br>
+                                <strong>Conciliación:</strong> Tercero facilita <em>y propone</em> fórmulas de arreglo (Sentencia C-1195/01).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Heterocomposición -->
+                    <div class="flip-card h-full">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <i data-lucide="scale" class="w-10 h-10 text-indigo-500 mb-3"></i>
+                                <h3 class="font-bold text-slate-800 text-sm uppercase">2.4. Heterocomposición</h3>
+                                <p class="text-[10px] text-slate-500 mt-2">Un tercero decide (Fuerza Vinculante)</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4 class="font-bold text-white text-xs mb-2 border-b border-slate-600 pb-1 w-full">Jurisdicción vs Arbitraje</h4>
+                                <p class="text-[11px] text-slate-300">El Juez (Estado) o el Árbitro (Convenio).<br><br>
+                                <em>Bolivia (SCP 0037/2019):</em> El arbitraje es alternativo; el laudo no se revisa en fondo. La CPE (Art. 179) <strong>no</strong> incluye al arbitraje en la función judicial (a diferencia de Perú).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 6: UNIDAD III. TEORÍAS PROMOTORAS -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="3. Teorías del Giro Hacia los MARCs">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-teal-100 text-teal-800 font-bold text-xs uppercase font-serif-title border border-teal-200">Unidad III</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">Las teorías que empujaron el giro</h2>
+            </div>
+            
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    
+                    <div class="glass-panel p-4 rounded-xl">
+                        <h4 class="font-bold text-slate-800 text-sm border-b border-slate-200 pb-1 mb-2">3.1 Cappelletti & Garth (1978)</h4>
+                        <p class="text-xs text-slate-600"><em>La tercera ola del acceso a la justicia.</em> Acceder a la justicia no es solo ir al Juez; incluye todo mecanismo y procedimiento (incluyendo MARCs) para prevenir y solucionar controversias.</p>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl">
+                        <h4 class="font-bold text-slate-800 text-sm border-b border-slate-200 pb-1 mb-2">3.2 Frank Sander (1976)</h4>
+                        <p class="text-xs text-slate-600"><em>El Tribunal Multipuertas (Foro Adecuado).</em> Filtrar cada caso a su proceso ideal. Ajustar el "foro al conflicto" (Principio de idoneidad, Art. 3 Ley 708).</p>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl">
+                        <h4 class="font-bold text-slate-800 text-sm border-b border-slate-200 pb-1 mb-2">3.3 Escuela de Harvard (1981)</h4>
+                        <p class="text-xs text-slate-600"><em>Negociación por principios y el MAAN</em> (Mejor Alternativa a un Acuerdo Negociado). Separar a personas del problema, enfocarse en intereses, criterios objetivos.</p>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl">
+                        <h4 class="font-bold text-slate-800 text-sm border-b border-slate-200 pb-1 mb-2">Mnookin & Kornhauser (1979)</h4>
+                        <p class="text-xs text-slate-600"><em>"Negociar a la sombra de la ley".</em> Se negocia calculando qué haría el juez. Si la justicia es lenta/incierta, la sombra es débil y el acuerdo no es libre, es resignación.</p>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl">
+                        <h4 class="font-bold text-slate-800 text-sm border-b border-slate-200 pb-1 mb-2">3.4 Nils Christie (1977)</h4>
+                        <p class="text-xs text-slate-600"><em>Los conflictos como propiedad.</em> Abogados y Estado roban el conflicto y lo hacen técnico, volviendo espectador al afectado. Devolver el conflicto a las partes.</p>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl">
+                        <h4 class="font-bold text-slate-800 text-sm border-b border-slate-200 pb-1 mb-2">3.5 Bush, Folger, Lederach</h4>
+                        <p class="text-xs text-slate-600"><em>Mediación transformativa.</em> El éxito no es solo firmar el acta, sino revalorizar (empoderar) a la persona y lograr que reconozca la perspectiva del otro (evitar próximos litigios).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 7: 3.6 LAS VOCES ESCÉPTICAS -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="3.6. Las voces escépticas">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-rose-100 text-rose-800 font-bold text-xs uppercase font-serif-title border border-rose-200">Alerta Crítica</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">3.6. Voces Escépticas: "Paz no siempre es Justicia"</h2>
+            </div>
+            
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2">
+                <p class="text-sm text-slate-700 mb-6 font-academic italic text-center">Un módulo de maestría que solo escucha a los entusiastas no forma juristas, forma promotores.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-panel p-5 rounded-xl border-t-4 border-rose-600">
+                        <h4 class="font-bold text-rose-900 text-sm mb-2">Owen Fiss (1984)</h4>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-2">"Against Settlement"</span>
+                        <p class="text-xs text-slate-600">El acuerdo refleja desigualdades de poder. Terminar disputas priva a la sociedad de que el Juez declare y dé significado público al derecho. <strong>"El acuerdo trae paz, pero no necesariamente justicia"</strong>.</p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-xl border-t-4 border-rose-600">
+                        <h4 class="font-bold text-rose-900 text-sm mb-2">Marc Galanter (1974)</h4>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-2">"Why the Haves Come Out Ahead"</span>
+                        <p class="text-xs text-slate-600">Los litigantes habituales (bancos, aseguradoras) tienen ventajas estructurales frente al litigante ocasional. Conocen reglas y pueden esperar para asfixiar.</p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-xl border-t-4 border-rose-600">
+                        <h4 class="font-bold text-rose-900 text-sm mb-2">Laura Nader (1990)</h4>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-2">Ideología de la armonía</span>
+                        <p class="text-xs text-slate-600">El discurso conciliador puede ser un mecanismo coercitivo que privilegia la tranquilidad sobre la reivindicación de derechos (pide paciencia y silencio al más débil).</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-slate-50 border border-slate-200 rounded-lg p-4 text-center">
+                    <p class="text-xs font-bold text-slate-700">Reflexión en Bolivia:</p>
+                    <p class="text-xs text-slate-600 mt-1">La "Cultura de Paz" (CPE) y el "Vivir Bien" (Ley 708) no deben ser <em>ideología de la armonía</em>. La paz que interesa al Derecho es la <strong>Paz Positiva (Galtung)</strong>: la que incluye condiciones reales de justicia, no el silencio del oprimido.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 8: UNIDAD IV. MARCO INTERNACIONAL -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="4. El Marco Internacional">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-teal-100 text-teal-800 font-bold text-xs uppercase font-serif-title border border-teal-200">Unidad IV</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">Marco Internacional: Acceso a la Justicia</h2>
+            </div>
+            
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <div class="glass-panel p-4 rounded-xl bg-slate-50 border-slate-200">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-2"><i data-lucide="globe" class="w-4 h-4 text-blue-600"></i> 4.2 Sistema Interamericano (Corte IDH)</h4>
+                        <p class="text-xs text-slate-600 mb-2"><em>El Art. 13.IV CPE da jerarquía a esta jurisprudencia.</em></p>
+                        <ul class="text-[11px] text-slate-700 space-y-2">
+                            <li><strong>Caso Cantos v. Argentina (2002):</strong> Estados no deben interponer trabas o costos irrazonables al acceso. ¿Es la conciliación previa una traba si es meramente burocrática?</li>
+                            <li><strong>Caso Genie Lacayo v. Nicaragua:</strong> Plazo razonable evaluado por complejidad, actividad procesal y conducta de autoridades.</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl border-slate-200">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-2"><i data-lucide="gavel" class="w-4 h-4 text-indigo-600"></i> 4.3 Tribunal Europeo (Espejo Argumentativo)</h4>
+                        <ul class="text-[11px] text-slate-700 space-y-2">
+                            <li><strong>Suda c. R. Checa:</strong> Distingue arbitraje voluntario del forzoso (el forzoso debe tener garantías completas).</li>
+                            <li><strong>Mutu y Pechstein c. Suiza:</strong> Renuncia a la tutela judicial (cláusula arbitral) solo vale si es <em>libre e inequívoca</em>. Si es impuesta para poder trabajar, es forzosa. Ayuda a leer la "voluntariedad" (Art. 3 Ley 708).</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl border-slate-200">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-2"><i data-lucide="users" class="w-4 h-4 text-amber-600"></i> 4.4 Reglas de Brasilia (Vulnerabilidad)</h4>
+                        <p class="text-[11px] text-slate-700">
+                            <strong>Regla 43:</strong> Impulsa MARCs para descongestionar y facilitar acceso.<br>
+                            <strong>Regla 44 (Contrapeso):</strong> Antes de usar un MARC, considerar la vulnerabilidad. El mismo mecanismo que amplía acceso puede agravar la desigualdad si el vulnerable negocia en desventaja.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl border-slate-200">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-2"><i data-lucide="file-check" class="w-4 h-4 text-emerald-600"></i> 4.5 Posición de Bolivia (Arbitraje y Tratados)</h4>
+                        <p class="text-[11px] text-slate-700">
+                            Ratificó Nueva York (1958) y Panamá (1975) comercial.<br>
+                            <strong>Denunció el CIADI (2007)</strong> siendo el 1er Estado en hacerlo.<br>
+                            Art. 320.II CPE: Inversión extranjera a leyes bolivianas.<br>
+                            Art. 366 CPE: Excluye arbitraje intl. en cadena hidrocarburífera.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 9: UNIDAD V. LA RECEPCIÓN BOLIVIANA -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="5. Recepción Boliviana (Evolución Normativa)">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-teal-100 text-teal-800 font-bold text-xs uppercase font-serif-title border border-teal-200">Unidad V</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">La recepción boliviana: De la necesidad a la norma</h2>
+            </div>
+            
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2 relative mt-4">
+                <!-- Vertical Timeline -->
+                <div class="relative border-l-2 border-slate-200 ml-4 pl-6 space-y-6">
+                    
+                    <!-- Ley 1770 -->
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white border-2 border-slate-300 w-4 h-4 rounded-full"></div>
+                        <h3 class="text-sm font-bold text-slate-800">1997 - Ley 1770 de Arbitraje y Conciliación</h3>
+                        <p class="text-[11px] text-slate-600 mt-1">Ley pionera. Motivada por descongestión (riesgo de filtro estadístico) y cultura de diálogo. Abrogada, pero ultraactiva para procesos iniciados bajo ella.</p>
+                    </div>
+
+                    <!-- CPE 2009 -->
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white border-2 border-amber-500 w-4 h-4 rounded-full"></div>
+                        <h3 class="text-sm font-bold text-amber-800">2009 - Constitución Política del Estado</h3>
+                        <p class="text-[11px] text-slate-600 mt-1">
+                            Art 10 (Estado pacifista), Arts 115, 178, 180 (Tutela efectiva, armonía social).<br>
+                            <strong>OJO:</strong> Los MARCs entran por la "puerta residual" competencial (Art 297.II CPE), no por mención expresa en la función judicial.
+                        </p>
+                    </div>
+
+                    <!-- Ley 025 -->
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white border-2 border-indigo-500 w-4 h-4 rounded-full"></div>
+                        <h3 class="text-sm font-bold text-indigo-800">2010 - Ley 025 (Órgano Judicial)</h3>
+                        <p class="text-[11px] text-slate-600 mt-1">Conciliación como <em>primera actuación procesal</em> y medio de acceso directo. Se implementan 157 conciliadores en 2016. SCP 0048/2018-S2 consolida concepto.</p>
+                    </div>
+
+                    <!-- Ley 439 -->
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white border-2 border-emerald-500 w-4 h-4 rounded-full"></div>
+                        <h3 class="text-sm font-bold text-emerald-800">2013/2016 - Ley 439 (Código Procesal Civil)</h3>
+                        <p class="text-[11px] text-slate-600 mt-1">
+                            Conciliación previa (Art 292) e intraprocesal (Art 366).<br>
+                            <span class="font-bold text-rose-700">Fineza del TSJ (AS 218/2020 y 967/2019):</span> Lo obligatorio es el <em>intento de concurrir</em>, no el acuerdo. Concilia la obligatoriedad con la voluntariedad sin violar el "Caso Cantos".
+                        </p>
+                    </div>
+
+                    <!-- Ley 708 -->
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white border-2 border-teal-500 w-4 h-4 rounded-full"></div>
+                        <h3 class="text-sm font-bold text-teal-800">2015 - Ley 708 de Conciliación y Arbitraje</h3>
+                        <p class="text-[11px] text-slate-600 mt-1">Norma madre vigente. Art. 3: Cultura de paz orientada al Vivir Bien y Voluntariedad libre. Art. 4: Exclusión perimetral (Recursos naturales, tributos, orden público, estado civil). SCP 0037/2019: La nulidad controla el procedimiento, no revisa el fondo del laudo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 10: CIERRE Y REFLEXIÓN -->
+        <section class="slide flex-col h-full p-4 md:p-8 max-w-6xl mx-auto" data-title="Cierre: Preguntas Detonantes">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
+                <span class="px-2.5 py-1 rounded bg-slate-100 text-slate-800 font-bold text-xs uppercase font-serif-title border border-slate-200">Reflexión Final</span>
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif-title">Preguntas Detonantes para la Sala</h2>
+            </div>
+            
+            <div class="slide-scroll flex-1 overflow-y-auto pr-2">
+                <div class="glass-panel p-4 rounded-xl bg-slate-50 border-slate-200 mb-6">
+                    <p class="text-sm font-academic text-slate-700 leading-relaxed">
+                        Retomemos a los hermanos: El CPC exigirá intentar conciliación, pero no obligará a acordar. Si acuerdan, su acta será como sentencia. Si no, el juez decidirá. Los MARCs no son "enemigos" ni "versión empobrecida" del proceso, son el <strong>Foro Apropiado</strong> que necesita tener detrás la <em>sombra segura de la ley</em>.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="glass-panel p-4 rounded-xl hover-lift">
+                        <h4 class="font-bold text-amber-800 text-xs uppercase tracking-wider mb-2">1. Ideología de la Armonía</h4>
+                        <p class="text-xs text-slate-700">¿Cómo distingue el operador boliviano entre un acuerdo que expresa paz positiva y uno que solo refleja el silencio/cansancio del más débil?</p>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl hover-lift">
+                        <h4 class="font-bold text-indigo-800 text-xs uppercase tracking-wider mb-2">2. La Sombra de la Ley</h4>
+                        <p class="text-xs text-slate-700">¿Puede existir un sistema eficaz de conciliación si la justicia ordinaria es incierta? ¿Fortalecer los MARCs exige primero fortalecer a los jueces?</p>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl hover-lift">
+                        <h4 class="font-bold text-emerald-800 text-xs uppercase tracking-wider mb-2">3. Tensión Normativa</h4>
+                        <p class="text-xs text-slate-700">¿Es compatible la conciliación <em>previa obligatoria</em> (Art. 292 Ley 439) con el principio de <em>voluntariedad</em> (Art. 3 Ley 708)?</p>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl hover-lift">
+                        <h4 class="font-bold text-cyan-800 text-xs uppercase tracking-wider mb-2">4. Concepto Terminal</h4>
+                        <p class="text-xs text-slate-700">¿Deberíamos llamarlos "métodos alternativos" (secundarios) o "métodos <strong>apropiados</strong>" describe mejor su función constitucional?</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modales Auxiliares (Ocultos por defecto) -->
+        
+        <!-- Modal Índice (Grid) -->
+        <div id="grid-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+            <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col h-[80vh] overflow-hidden transform scale-95 transition-transform duration-300" id="grid-content">
+                <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                    <h3 class="font-bold text-slate-800 font-serif-title text-lg flex items-center gap-2"><i data-lucide="grid"></i> Índice de Sesión</h3>
+                    <button onclick="toggleGridModal()" class="text-slate-500 hover:text-rose-500 transition-colors p-1"><i data-lucide="x"></i></button>
+                </div>
+                <div class="p-4 overflow-y-auto flex-1 bg-slate-100">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="grid-buttons-container">
+                        <!-- Botones autogenerados -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Notas Dogmáticas -->
+        <div id="lectura-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+            <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col h-[85vh] overflow-hidden transform scale-95 transition-transform duration-300" id="lectura-content">
+                <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-amber-50">
+                    <h3 class="font-bold text-amber-900 font-academic text-lg flex items-center gap-2"><i data-lucide="book-open"></i> Texto Dogmático / Guion del Docente</h3>
+                    <button onclick="toggleLecturaModal()" class="text-slate-500 hover:text-rose-500 transition-colors p-1"><i data-lucide="x"></i></button>
+                </div>
+                <div class="p-6 overflow-y-auto flex-1 font-academic text-sm text-slate-700 leading-relaxed bg-white">
+                    <p class="italic mb-4 text-center">Este panel contiene los fundamentos teóricos completos para apoyo del disertante.</p>
+                    <h4 class="font-bold font-serif-title mb-2 mt-4 text-slate-900">Unidad I. El Conflicto</h4>
+                    <p class="mb-4">Georg Simmel (1908) sostuvo que el conflicto es una forma de socialización y no su ruptura. Lewis Coser (1956) agrega que cumple funciones positivas y distingue entre conflictos realistas (buscan resultado) y no realistas (descarga de hostilidad). Carnelutti define el litigio como pretensión + resistencia. Felstiner, Abel y Sarat explican la pirámide de Nombrar, Culpar y Reclamar. Galtung propone el triángulo Actitudes-Conductas-Contradicción. Harvard diferencia posiciones de intereses. Deutsch afirma que "la competencia engendra competencia". Y la teoría de Sistemas Dinámicos advierte la sensibilidad a condiciones iniciales (Efecto Mariposa).</p>
+                    
+                    <h4 class="font-bold font-serif-title mb-2 mt-4 text-slate-900">Unidad II. Trilogía de Alcalá-Zamora</h4>
+                    <p class="mb-4">Autodefensa: Imposición unilateral. Autocomposición: Renuncia, allanamiento, transacción, negociación, mediación, conciliación. Heterocomposición: Juez o Árbitro (decisión de tercero vinculante).</p>
+                    
+                    <h4 class="font-bold font-serif-title mb-2 mt-4 text-slate-900">Unidad III. Teorías del Giro</h4>
+                    <p class="mb-4">Cappelletti y Garth: 3ra ola del acceso a la justicia. Sander: Foro apropiado (ajustar el foro a la disputa). Harvard/Mnookin: MAAN y negociar a la sombra de la ley. Christie: Devolver el conflicto (propiedad) a las partes. Bush/Folger: Mediación transformativa. Fiss/Galanter/Nader advierten sobre acuerdos injustos, ideología de la armonía y disparidad de poder (Los escépticos).</p>
+
+                    <h4 class="font-bold font-serif-title mb-2 mt-4 text-slate-900">Unidad IV. Marco Internacional</h4>
+                    <p class="mb-4">ONU, Declaración de Manila, Agenda 2030 (16.3). CIDH: Art 8.1 y 25; Casos Cantos (no imponer trabas de acceso) y Genie Lacayo (plazo razonable). TEDH: Caso Mutu y Pechstein (voluntariedad real en la renuncia). Reglas de Brasilia 43 y 44 (Impulsar MARCs pero cuidando al vulnerable).</p>
+
+                    <h4 class="font-bold font-serif-title mb-2 mt-4 text-slate-900">Unidad V. Recepción en Bolivia</h4>
+                    <p class="mb-4">Ley 1770 (1997 pionera). CPE 2009 (Arts 10, 115, 178; Puerta residual Art 297.II). Ley 025 (2010) Conciliación como primera actuación. Ley 439 (2013) Conciliación previa obligatoria de "intentar" y saneamiento. Ley 708 (2015) Norma madre, cultura de paz y materias excluidas.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Controles inferiores -->
+    <footer class="w-full h-14 bg-slate-50 border-t border-slate-200 px-4 md:px-8 flex items-center justify-between z-40 shrink-0">
+        <button onclick="prevSlide()" class="px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50" id="btn-prev">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Anterior
+        </button>
+        
+        <div class="text-xs text-slate-500 hidden sm:block">
+            Navegue con <kbd class="px-1.5 py-0.5 bg-slate-200 rounded text-slate-700 font-mono text-[10px]">←</kbd> <kbd class="px-1.5 py-0.5 bg-slate-200 rounded text-slate-700 font-mono text-[10px]">→</kbd> o Espacio
+        </div>
+
+        <button onclick="nextSlide()" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50" id="btn-next">
+            Siguiente <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+    </footer>
+
+    <script>
+        // Iniciar Lucide
+        lucide.createIcons();
+
+        // Estado
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        // Elementos UI
+        const progressBar = document.getElementById('progress-bar');
+        const slideCounter = document.getElementById('slide-counter');
+        const topSlideTitle = document.getElementById('top-slide-title');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        
+        // Modales
+        const gridModal = document.getElementById('grid-modal');
+        const gridContent = document.getElementById('grid-content');
+        const gridContainer = document.getElementById('grid-buttons-container');
+        
+        const lecturaModal = document.getElementById('lectura-modal');
+        const lecturaContent = document.getElementById('lectura-content');
+
+        function initPresentation() {
+            // Generar botones para la cuadrícula
+            slides.forEach((slide, index) => {
+                const title = slide.getAttribute('data-title') || `Diapositiva ${index + 1}`;
+                const btn = document.createElement('button');
+                btn.className = 'p-3 text-left bg-white border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50 rounded-xl transition-colors shadow-sm text-xs font-medium text-slate-700 h-20 overflow-hidden flex flex-col gap-1';
+                btn.innerHTML = `<span class="text-emerald-700 font-bold">Slide ${index + 1}</span><span class="line-clamp-2">${title}</span>`;
+                btn.onclick = () => {
+                    goToSlide(index);
+                    toggleGridModal();
+                };
+                gridContainer.appendChild(btn);
+            });
+            updateUI();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide++;
+                slides[currentSlide].classList.add('active');
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide--;
+                slides[currentSlide].classList.add('active');
+                updateUI();
+            }
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < totalSlides) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = index;
+                slides[currentSlide].classList.add('active');
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            // Progreso
+            const progress = (currentSlide / (totalSlides - 1)) * 100;
+            progressBar.style.width = `${progress}%`;
+            slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+
+            // Titulo top
+            const activeTitle = slides[currentSlide].getAttribute('data-title');
+            topSlideTitle.textContent = activeTitle || '';
+
+            // Botones
+            btnPrev.disabled = currentSlide === 0;
+            btnNext.disabled = currentSlide === totalSlides - 1;
+            
+            // Scroll reset
+            const scrollArea = slides[currentSlide].querySelector('.slide-scroll');
+            if(scrollArea) scrollArea.scrollTop = 0;
+            
+            // Highlight active grid button
+            Array.from(gridContainer.children).forEach((btn, idx) => {
+                if(idx === currentSlide) {
+                    btn.classList.add('ring-2', 'ring-emerald-500', 'bg-emerald-50');
+                } else {
+                    btn.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50');
+                }
+            });
+        }
+
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            // Ignorar si hay un modal abierto (excepto F para fullscreen)
+            const isModalOpen = !gridModal.classList.contains('hidden') || !lecturaModal.classList.contains('hidden');
+            
+            if (isModalOpen) {
+                if(e.key === 'Escape') {
+                    if(!gridModal.classList.contains('hidden')) toggleGridModal();
+                    if(!lecturaModal.classList.contains('hidden')) toggleLecturaModal();
+                }
+                return;
+            }
+
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'f' || e.key === 'F') {
+                e.preventDefault();
+                toggleFullscreen();
+            } else if (e.key === 'm' || e.key === 'M') {
+                e.preventDefault();
+                toggleGridModal();
+            }
+        });
+
+        // Pantalla completa
+        function toggleFullscreen() {
+            const icon = document.getElementById('fullscreen-icon');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => console.log(err));
+                icon.setAttribute('data-lucide', 'minimize');
+            } else {
+                document.exitFullscreen();
+                icon.setAttribute('data-lucide', 'maximize');
+            }
+            lucide.createIcons();
+        }
+        
+        // Modales
+        function toggleGridModal() {
+            if(gridModal.classList.contains('hidden')){
+                gridModal.classList.remove('hidden');
+                gridModal.classList.add('flex');
+                setTimeout(() => {
+                    gridModal.classList.remove('opacity-0');
+                    gridContent.classList.remove('scale-95');
+                }, 10);
+            } else {
+                gridModal.classList.add('opacity-0');
+                gridContent.classList.add('scale-95');
+                setTimeout(() => {
+                    gridModal.classList.add('hidden');
+                    gridModal.classList.remove('flex');
+                }, 300);
+            }
+        }
+
+        function toggleLecturaModal() {
+            if(lecturaModal.classList.contains('hidden')){
+                lecturaModal.classList.remove('hidden');
+                lecturaModal.classList.add('flex');
+                setTimeout(() => {
+                    lecturaModal.classList.remove('opacity-0');
+                    lecturaContent.classList.remove('scale-95');
+                }, 10);
+            } else {
+                lecturaModal.classList.add('opacity-0');
+                lecturaContent.classList.add('scale-95');
+                setTimeout(() => {
+                    lecturaModal.classList.add('hidden');
+                    lecturaModal.classList.remove('flex');
+                }, 300);
+            }
+        }
+
+        // Arrancar
+        window.addEventListener('DOMContentLoaded', initPresentation);
+    </script>
+</body>
+</html>
